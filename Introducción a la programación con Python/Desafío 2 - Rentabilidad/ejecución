@@ -1,0 +1,7 @@
+#!/bin/bash
+
+#
+python emprendedor1.py 50 1000 20000
+python emprendedor2.py 50 6000 1000 2000 3000 20000
+python emprendedor3.py 50 3000 20000
+python emprendedor3.py 50 3000 20000 2000
