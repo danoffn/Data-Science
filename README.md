@@ -14,6 +14,8 @@ pip install matplotlib
 pip install scipy
 pip install watermark
 pip install seaborn
+pip install statsmodels
+pip install sklearn
 deactivate # para salir del environment
 
 ```
