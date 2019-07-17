@@ -16,6 +16,8 @@ pip install watermark
 pip install seaborn
 pip install statsmodels
 pip install sklearn
+pip install missingno
+pip install factor_analyzer
 deactivate # para salir del environment
 
 ```
