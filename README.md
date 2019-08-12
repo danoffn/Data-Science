@@ -19,6 +19,7 @@ pip install sklearn
 pip install missingno
 pip install factor_analyzer
 pip install 'pygam===0.5.2' # version necesaria para desafío 2 - ML
+pip install imbalanced-learn
 deactivate # para salir del environment
 
 ```
