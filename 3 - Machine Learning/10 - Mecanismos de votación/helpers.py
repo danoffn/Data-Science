@@ -47,7 +47,7 @@ def plot_classification_report(y_true, y_hat):
     plt.yticks([1.0, 2.0, 3.0], ['Precision', 'Recall', 'f1-Score'])
 
 
-def grid_plot_batch(df, cols, plot_type):
+def grid_plot_batch(df, cols, plot_type, sub_width=5, sub_height=5):
 
     """
     grid_plot_batch: Genera una grilla matplotlib para cada conjunto de variables.
@@ -63,6 +63,10 @@ def grid_plot_batch(df, cols, plot_type):
     """
     # calcular un aproximado a la cantidad de filas
     rows = np.ceil(df.shape[1] / cols)
+
+    # mantiene tamaño fijo para subplots
+
+    plt.figure(figsize=(cols * sub_width, rows * sub_height))
 
     # para cada columna
     for index, (colname, serie) in enumerate(df.iteritems()):
@@ -83,7 +87,7 @@ def identify_high_correlations(df, threshold=.7):
     """
 
     # extraemos la matriz de correlación con una máscara booleana
-    tmp = df.corr().mask(abs(df.corr()) < .7, df)
+    tmp = df.corr().mask(abs(df.corr()) < threshold, df)
     # convertimos a long format
     tmp = pd.melt(tmp)
     # agregamos una columna extra que nos facilitará los cruces entre variables
