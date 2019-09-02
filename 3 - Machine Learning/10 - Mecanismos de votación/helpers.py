@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.metrics import classification_report, roc_curve, auc
 
+
 def plot_classification_report(y_true, y_hat):
     """
     plot_classification_report: Genera una visualización de los puntajes reportados con la función `sklearn.metrics.classification_report`.
@@ -22,13 +23,15 @@ def plot_classification_report(y_true, y_hat):
     # process string and store in a list
     report = classification_report(y_true, y_hat).split()
     # keep values
-    report = [i for i in report if i not in ['precision', 'recall', 'f1-score', 'support', 'avg']]
+    report = [i for i in report if i not in [
+        'precision', 'recall', 'f1-score', 'support', 'avg']]
     # transfer to a DataFrame
     report = pd.DataFrame(np.array(report).reshape(len(report) // 5, 5))
     # asign columns labels
     report.columns = ['idx', 'prec', 'rec', 'f1', 'n']
     # preserve class labels
-    class_labels = report.iloc[:np.unique(y_true).shape[0]].pop('idx').apply(int)
+    class_labels = report.iloc[:np.unique(
+        y_true).shape[0]].pop('idx').apply(int)
     # separate values
     class_report = report.iloc[:np.unique(y_true).shape[0], 1:4]
     # convert from str to float
@@ -41,14 +44,15 @@ def plot_classification_report(y_true, y_hat):
     for i in class_labels:
         plt.plot(class_report['prec'][i], [1], marker='x', color=colors[i])
         plt.plot(class_report['rec'][i], [2], marker='x', color=colors[i])
-        plt.plot(class_report['f1'][i], [3], marker='x',color=colors[i], label=f'Class: {i}')
+        plt.plot(class_report['f1'][i], [3], marker='x',
+                 color=colors[i], label=f'Class: {i}')
 
-    plt.scatter(average_report, [1, 2, 3], marker='o', color='forestgreen', label='Avg')
+    plt.scatter(average_report, [1, 2, 3],
+                marker='o', color='forestgreen', label='Avg')
     plt.yticks([1.0, 2.0, 3.0], ['Precision', 'Recall', 'f1-Score'])
 
 
 def grid_plot_batch(df, cols, plot_type, sub_width=5, sub_height=5):
-
     """
     grid_plot_batch: Genera una grilla matplotlib para cada conjunto de variables.
 
@@ -74,6 +78,7 @@ def grid_plot_batch(df, cols, plot_type, sub_width=5, sub_height=5):
         plot_type(serie)
         plt.tight_layout()
 
+
 def identify_high_correlations(df, threshold=.7):
     """
     identify_high_correlations: Genera un reporte sobre las correlaciones existentes entre variables, condicional a un nivel arbitrario.
@@ -96,8 +101,9 @@ def identify_high_correlations(df, threshold=.7):
     tmp = tmp[['variable', 'var2', 'value']].dropna()
     # eliminamos valores duplicados
     tmp = tmp[tmp['value'].duplicated()]
-    # eliminamos variables con valores de 1 
+    # eliminamos variables con valores de 1
     return tmp[tmp['value'] < 1.00]
+
 
 def plot_roc(model, y_true, X_test, model_label=None):
     """TODO: Docstring for plot_roc.
@@ -110,7 +116,8 @@ def plot_roc(model, y_true, X_test, model_label=None):
 
     """
     class_pred = model.predict_proba(X_test)[:1]
-    false_positive_rates, true_positive_rates, _ = roc_curve(y_true, class_pred)
+    false_positive_rates, true_positive_rates, _ = roc_curve(
+        y_true, class_pred)
     store_auc = auc(false_positive_rates, true_positive_rate)
 
     if model_label is not None:
