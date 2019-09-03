@@ -5,7 +5,7 @@ import seaborn as sns
 
 
 def get_graph(df, cols=4, var_numericas=[], var_categoricas=[],
-              sub_width=5, sub_height=5):
+              sub_width=5, sub_height=5, porcentaje=True):
     """
     grid_plot_batch: Genera una grilla con distintos tipos de gráficos para
     cada conjunto de variables. El tipo de gráfico dependerá del tipo de datos
@@ -21,6 +21,7 @@ def get_graph(df, cols=4, var_numericas=[], var_categoricas=[],
         - var_categoricas: lista con nombres de columnas del tipo categoricas.
         - sub_width: ancho de subplot.
         - sub_height: alto de subplot.
+        - Porcentaje: grafica el porcentaje de las variables categóricas
 
     Retorno:
         - Una grilla generada con sns.distplot y sns.countplot dependiendo del
@@ -47,7 +48,8 @@ def get_graph(df, cols=4, var_numericas=[], var_categoricas=[],
         plt.ylabel('')
         for item in g.get_xticklabels():
             item.set_rotation(30)
-        plt.tight_layout()
+
+    plt.tight_layout()
 
     if len(var_categoricas) == 0:
         var_categoricas = list(
@@ -62,13 +64,20 @@ def get_graph(df, cols=4, var_numericas=[], var_categoricas=[],
 
     for index, col_name in enumerate(var_categoricas):
         plt.subplot(rows, cols, index + 1)
-        g = sns.countplot(df[col_name], palette="Greens")
+        value_count = df[col_name].value_counts(
+            normalize=porcentaje,
+            ascending=True
+            )
+        g = sns.barplot(value_count.index,
+                        value_count.values,
+                        palette="Greens"
+                        )
         plt.title(col_name + " count", fontsize=16)
         plt.xlabel('')
         plt.ylabel('')
         for item in g.get_xticklabels():
             item.set_rotation(45)
-        plt.tight_layout()
+    plt.tight_layout()
 
 
 def plot_class_report(class_report, title):
