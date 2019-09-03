@@ -21,6 +21,7 @@ pip install factor_analyzer
 pip install 'pygam===0.5.2' # version necesaria para desafío 2 - ML
 pip install imbalanced-learn
 pip install pydotplus # requerido por funciones personalizadas afx
+pip install xlrd # Manipular xlsx
 deactivate # para salir del environment
 
 ```
