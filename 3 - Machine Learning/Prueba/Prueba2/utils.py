@@ -67,11 +67,86 @@ def get_graph(df, cols=4, var_numericas=[], var_categoricas=[],
         value_count = df[col_name].value_counts(
             normalize=porcentaje,
             ascending=True
-            )
+        )
         g = sns.barplot(value_count.index,
                         value_count.values,
                         palette="Greens"
                         )
+        plt.title(col_name + " count", fontsize=16)
+        plt.xlabel('')
+        plt.ylabel('')
+        for item in g.get_xticklabels():
+            item.set_rotation(45)
+    plt.tight_layout()
+
+
+def get_graph_2D(df, groupby, cols=4, var_numericas=[],
+                 var_categoricas=[], sub_width=5, sub_height=5,
+                 porcentaje=True):
+    """
+    grid_plot_batch: Genera una grilla con distintos tipos de gráficos para
+    cada conjunto de variables agrupadas por la columna groupby. El tipo de
+    gráfico dependerá del tipo de datos en la serie.
+    Para datos numéricos, utiliza distplot; para datos categéricos
+    utiliza countplot. La clasificación de tipo de datos se realiza
+    automáticamente o puede ser definida a usando una lista con var_categoricas
+    o var_numericas
+
+    Parámetros de ingreso:
+        - df: un objeto pd.DataFrame
+        - cols: cantidad de columnas en la grilla.
+        - var_numericas: lista con nombres de columnas del tipo numérica.
+        - var_categoricas: lista con nombres de columnas del tipo categoricas.
+        - sub_width: ancho de subplot.
+        - sub_height: alto de subplot.
+        - Porcentaje: grafica el porcentaje de las variables categóricas
+
+    Retorno:
+        - Una grilla generada con sns.distplot y sns.countplot dependiendo del
+        tipo de datos en la serie.
+
+    """
+
+    if len(var_numericas) == 0:
+        var_numericas = list(
+            df.select_dtypes(include=["float64", "int64"]).columns
+        )
+    var_numericas.sort()
+
+    rows = np.ceil(len(var_numericas)*len(df[groupby].unique()) / cols)
+
+    fig = plt.figure(figsize=(cols * sub_width, rows * sub_height))
+
+    for index, col_name in enumerate(var_numericas):
+        ax = fig.add_subplot(rows, cols, index + 1)
+        g = sns.FacetGrid(data=df, hue=groupby)
+        g.map(sns.distplot, col_name, kde=True, ax=ax)
+        ax.set_title(col_name + " agrupados por " + groupby)
+        ax.set_xlabel("")
+        ax.set_ylabel("")
+        ax.legend(title="Etiquetas de " + groupby)
+        plt.close(2)
+
+    plt.tight_layout()
+
+    if len(var_categoricas) == 0:
+        var_categoricas = list(
+            df.select_dtypes(include=["object"]).columns
+        )
+
+    var_categoricas.sort()
+
+    rows = np.ceil(len(var_categoricas) / cols)
+
+    plt.figure(figsize=(cols * sub_width, rows * sub_height))
+
+    for index, col_name in enumerate(var_categoricas):
+        plt.subplot(rows, cols, index + 1)
+        g = sns.countplot(x=col_name,
+                          hue=groupby,
+                          data=df,
+                          palette="Greens"
+                          )
         plt.title(col_name + " count", fontsize=16)
         plt.xlabel('')
         plt.ylabel('')
